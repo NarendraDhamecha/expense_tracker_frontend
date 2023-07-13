@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { NavLink } from "react-router-dom";
 
 const SignUp = () => {
   const nameRef = useRef("");
@@ -27,7 +28,7 @@ const SignUp = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/expense", {
+      const res = await fetch("http://localhost:4000/signup", {
         method: "POST",
         body: JSON.stringify({
           name: name,
@@ -56,8 +57,8 @@ const SignUp = () => {
     <div className="container-fluid text-center">
       <div className="row">
         <div className="col-md-4 col-10 mx-auto">
-          <div className="card bg-dark text-white">
-            <h3 className="card-header bg-secondary">SIGN UP</h3>
+          <div className="card">
+            <h3 className="card-header">SIGN UP</h3>
             <div className="card-body">
               <form onSubmit={onSubmitHandler}>
                 <div className="mb-2">
@@ -109,6 +110,13 @@ const SignUp = () => {
                   Sign Up
                 </button>
               </form>
+            </div>
+          </div>
+          <div className="card mt-3">
+            <div className="card-body">
+               <p className="card-text">
+               Already have an account? <NavLink to="/login">Log In</NavLink>
+               </p>
             </div>
           </div>
         </div>
