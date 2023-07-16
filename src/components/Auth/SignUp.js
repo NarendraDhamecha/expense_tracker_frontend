@@ -28,7 +28,7 @@ const SignUp = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/signup", {
+      const res = await fetch("http://localhost:4000/user/signup", {
         method: "POST",
         body: JSON.stringify({
           name: name,

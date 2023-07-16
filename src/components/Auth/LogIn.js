@@ -1,9 +1,10 @@
 import { useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 const LogIn = () => {
   const emailRef = useRef("");
   const passwordRef = useRef("");
+  const history = useHistory();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ const LogIn = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/login", {
+      const res = await fetch("http://localhost:4000/user/login", {
         method: "POST",
         body: JSON.stringify({
           email: email,
@@ -29,7 +30,15 @@ const LogIn = () => {
       });
 
       const data = await res.json();
-      console.log(data);
+
+      if(!res.ok){
+        throw new Error(data.message);
+      }
+
+      alert('User login sucessful')
+      localStorage.setItem('isLoggedIn', 'true');
+      history.push('/expenses')
+      
     } catch (err) {
       alert(err);
     }
