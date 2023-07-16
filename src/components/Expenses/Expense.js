@@ -8,7 +8,9 @@ const Expense = () => {
   const catagoryRef = useRef("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/expenses")
+    fetch("http://localhost:4000/expenses", {
+      headers: {"Authorization": localStorage.getItem('token')}
+    })
       .then((response) => response.json())
       .then((data) => setExpensesList(data));
   }, []);
@@ -32,6 +34,7 @@ const Expense = () => {
           }),
           headers: {
             "Content-Type": "application/json",
+            "Authorization": localStorage.getItem('token')
           },
         }
       );
@@ -46,6 +49,9 @@ const Expense = () => {
   const onDelete = async (id) => {
     const response = await fetch(`http://localhost:4000/expenses/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": localStorage.getItem('token')
+      }
     });
 
     if (response.ok) {

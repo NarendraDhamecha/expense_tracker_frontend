@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 
-const LogIn = () => {
+const LogIn = (props) => {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const history = useHistory();
@@ -34,9 +34,10 @@ const LogIn = () => {
       if(!res.ok){
         throw new Error(data.message);
       }
-
+      
       alert('User login sucessful')
-      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('token', data.token);
+      props.setToken(data.token)
       history.push('/expenses')
       
     } catch (err) {
