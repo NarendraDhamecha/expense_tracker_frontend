@@ -37,6 +37,7 @@ const LogIn = (props) => {
       
       alert('User login sucessful')
       localStorage.setItem('token', data.token);
+      localStorage.setItem('isPremium', data.isPremium)
       props.setToken(data.token)
       history.push('/expenses')
       

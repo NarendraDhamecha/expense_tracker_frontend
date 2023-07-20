@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ExpensesList from "./ExpensesList";
+import PremiumFeature from './PremiumFeature';
 
 const Expense = () => {
   const [expensesList, setExpensesList] = useState([]);
@@ -65,6 +66,7 @@ const Expense = () => {
 
   return (
     <div className="container-fluid text-center">
+     <PremiumFeature/>
       <div className="row">
         <div className="col-md-5 col-10 mx-auto">
           <div className="card">
