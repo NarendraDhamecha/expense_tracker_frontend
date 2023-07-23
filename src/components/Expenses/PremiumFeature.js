@@ -1,9 +1,10 @@
 import axios from "axios";
 import "./PremiumFeature.css";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const PremiumFeature = () => {
-  const initialState = localStorage.getItem('isPremium')
+  const initialState = JSON.parse(localStorage.getItem('isPremium'))
   const [isPremium, setPremium] = useState(initialState);
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -74,15 +75,17 @@ const PremiumFeature = () => {
         alert(response.error.description);
       });
     } catch (err) {
-      console.log(err);;
+      console.log(err);
     }
   };
 
   return (
     <div className="premium">
-      {isPremium === 'false' && <button className="btn btn-primary" onClick={activatePremiumHandler}>
+      {!isPremium && <button className="btn btn-primary" onClick={activatePremiumHandler}>
         Activate Premium
       </button>}
+      {isPremium && <h5>You are a premium user</h5>}
+      {isPremium && <NavLink to='/leaderboard'><button className="btn btn-success">Show Leaderboard</button></NavLink>}
     </div>
   );
 };
