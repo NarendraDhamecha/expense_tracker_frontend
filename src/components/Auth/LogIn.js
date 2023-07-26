@@ -72,10 +72,11 @@ const LogIn = (props) => {
                     required
                   />
                 </div>
-                <button className="btn btn-primary" type="submit">
+                <button className="btn btn-primary mb-2" type="submit">
                   Log In
                 </button>
               </form>
+              <NavLink to="/forgotpassword">Reset/Forgot Password</NavLink>
             </div>
           </div>
           <div className="card mt-3">

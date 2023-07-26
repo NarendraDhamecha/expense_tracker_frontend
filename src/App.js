@@ -4,6 +4,7 @@ import LogIn from "./components/Auth/LogIn";
 import Expense from './components/Expenses/Expense';
 import Leaderboard from './components/Expenses/Leaderboard';
 import { useState } from 'react';
+import ForgotPassword from './components/Auth/ForgotPassword';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         </Route>
         {token && <Route exact path='/expenses' component={Expense}/>}
         <Route exact path='/leaderboard' component={Leaderboard}/>
+        <Route exact path='/forgotpassword' component={ForgotPassword}/>
     </Switch>
   );
 }
