@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import ExpensesList from "./ExpensesList";
 import PremiumFeature from './PremiumFeature';
+import DownloadedExpenses from "./DownloadedExpenses";
 
 const Expense = () => {
+  const initialState = JSON.parse(localStorage.getItem("isPremium"))
+  const [isPremium, setPremium] = useState(initialState);
   const [expensesList, setExpensesList] = useState([]);
   const amountRef = useRef("");
   const descriptionRef = useRef("");
@@ -19,7 +22,7 @@ const Expense = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    const amount = amountRef.current.value;
+    const amount = Number(amountRef.current.value);
     const description = descriptionRef.current.value;
     const category = catagoryRef.current.value;
 
@@ -47,8 +50,8 @@ const Expense = () => {
     }
   };
 
-  const onDelete = async (id) => {
-    const response = await fetch(`http://localhost:4000/expenses/${id}`, {
+  const onDelete = async (id, amount) => {
+    const response = await fetch(`http://localhost:4000/expenses/${id}/${amount}`, {
       method: "DELETE",
       headers: {
         "Authorization": localStorage.getItem('token')
@@ -66,7 +69,7 @@ const Expense = () => {
 
   return (
     <div className="container-fluid text-center">
-     <PremiumFeature/>
+     <PremiumFeature setPremium={setPremium} isPremium={isPremium}/>
       <div className="row">
         <div className="col-md-5 col-10 mx-auto">
           <div className="card">
@@ -79,6 +82,7 @@ const Expense = () => {
                     className="form-control"
                     placeholder="Amount"
                     ref={amountRef}
+                    required
                   />
                 </div>
                 <div className="mb-2">
@@ -87,6 +91,7 @@ const Expense = () => {
                     className="form-control"
                     placeholder="Description"
                     ref={descriptionRef}
+                    required
                   />
                 </div>
                 <div className="mb-2">
@@ -118,6 +123,7 @@ const Expense = () => {
           </div>
         </div>
       </div>
+      {isPremium && <DownloadedExpenses/>}
     </div>
   );
 };
