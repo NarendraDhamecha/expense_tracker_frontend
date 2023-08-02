@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ExpensesList from "./ExpensesList";
 import PremiumFeature from "./PremiumFeature";
 import DownloadedExpenses from "./DownloadedExpenses";
@@ -6,6 +6,8 @@ import axios from "axios";
 
 const Expense = () => {
   const initialState = JSON.parse(localStorage.getItem("isPremium"));
+  const initialRowsPerPage = Number(localStorage.getItem('rows')); 
+  const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage);
   const [isPremium, setPremium] = useState(initialState);
   const [expensesList, setExpensesList] = useState([]);
   const [pagination, setPagination] = useState({
@@ -19,10 +21,10 @@ const Expense = () => {
   const descriptionRef = useRef("");
   const catagoryRef = useRef("");
 
-  const getExpenses = async (page) => {
+  const getExpenses = useCallback(async (page) => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/expenses?page=${page}`,
+        `http://localhost:4000/expenses?page=${page}&rows=${rowsPerPage}`,
         {
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -42,11 +44,12 @@ const Expense = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  },[rowsPerPage]);
 
   useEffect(() => {
     getExpenses(1);
-  }, []);
+    console.log('useEffect')
+  }, [getExpenses]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -72,7 +75,7 @@ const Expense = () => {
         }
       );
 
-      if (expensesList.length < 5) {
+      if (expensesList.length < rowsPerPage) {
         const data = await response.json();
         setExpensesList((prevList) => [...prevList, data]);
       } else {
@@ -111,8 +114,20 @@ const Expense = () => {
     }
   };
 
+  const handleRowsPerPage = (e) => {
+    localStorage.setItem('rows', e.target.value);
+    setRowsPerPage(e.target.value);
+  }
+
   return (
     <div className="container-fluid text-center">
+      <label className="me-1">Rows per page :</label>
+      <select onChange={handleRowsPerPage}>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+      </select>
       <PremiumFeature setPremium={setPremium} isPremium={isPremium} />
       <div className="row">
         <div className="col-md-5 col-10 mx-auto">
