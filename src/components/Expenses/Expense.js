@@ -1,22 +1,51 @@
 import { useEffect, useRef, useState } from "react";
 import ExpensesList from "./ExpensesList";
-import PremiumFeature from './PremiumFeature';
+import PremiumFeature from "./PremiumFeature";
 import DownloadedExpenses from "./DownloadedExpenses";
+import axios from "axios";
 
 const Expense = () => {
-  const initialState = JSON.parse(localStorage.getItem("isPremium"))
+  const initialState = JSON.parse(localStorage.getItem("isPremium"));
   const [isPremium, setPremium] = useState(initialState);
   const [expensesList, setExpensesList] = useState([]);
+  const [pagination, setPagination] = useState({
+    hasNextPage: false,
+    hasPreviousPage: false,
+    currentPage: 1,
+    nextPage: 2,
+    previousPage: null,
+  });
   const amountRef = useRef("");
   const descriptionRef = useRef("");
   const catagoryRef = useRef("");
 
+  const getExpenses = async (page) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/expenses?page=${page}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      setExpensesList(response.data.response);
+
+      setPagination({
+        hasNextPage: response.data.hasNextPage,
+        hasPreviousPage: response.data.hasPreviousPage,
+        currentPage: response.data.currentPage,
+        nextPage: response.data.nextPage,
+        previousPage: response.data.previousPage,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:4000/expenses", {
-      headers: {"Authorization": localStorage.getItem('token')}
-    })
-      .then((response) => response.json())
-      .then((data) => setExpensesList(data));
+    getExpenses(1);
   }, []);
 
   const submitHandler = async (e) => {
@@ -38,25 +67,40 @@ const Expense = () => {
           }),
           headers: {
             "Content-Type": "application/json",
-            "Authorization": localStorage.getItem('token')
+            Authorization: localStorage.getItem("token"),
           },
         }
       );
 
-      const data = await response.json();
-      setExpensesList((prevList) => [...prevList, data]);
+      if (expensesList.length < 5) {
+        const data = await response.json();
+        setExpensesList((prevList) => [...prevList, data]);
+      } else {
+        setPagination((prevObj) => {
+          return {
+            hasNextPage: true,
+            hasPreviousPage: prevObj.hasPreviousPage,
+            currentPage: prevObj.currentPage,
+            nextPage: prevObj.currentPage + 1,
+            previousPage: prevObj.previousPage,
+          };
+        });
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
   const onDelete = async (id, amount) => {
-    const response = await fetch(`http://localhost:4000/expenses/${id}/${amount}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": localStorage.getItem('token')
+    const response = await fetch(
+      `http://localhost:4000/expenses/${id}/${amount}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
       }
-    });
+    );
 
     if (response.ok) {
       const filteredList = expensesList.filter((expense) => {
@@ -69,7 +113,7 @@ const Expense = () => {
 
   return (
     <div className="container-fluid text-center">
-     <PremiumFeature setPremium={setPremium} isPremium={isPremium}/>
+      <PremiumFeature setPremium={setPremium} isPremium={isPremium} />
       <div className="row">
         <div className="col-md-5 col-10 mx-auto">
           <div className="card">
@@ -119,11 +163,35 @@ const Expense = () => {
             <h2 className="card-header">EXPENSES</h2>
             <div className="card-body">
               <ExpensesList onDelete={onDelete} expenses={expensesList} />
+              {pagination.hasPreviousPage && (
+                <button
+                  className="btn btn-primary btn-sm me-1"
+                  onClick={() => getExpenses(pagination.previousPage)}
+                >
+                  {pagination.previousPage}
+                </button>
+              )}
+              {
+                <button
+                  className="btn btn-primary me-1"
+                  onClick={() => getExpenses(pagination.currentPage)}
+                >
+                  {pagination.currentPage}
+                </button>
+              }
+              {pagination.hasNextPage && (
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => getExpenses(pagination.nextPage)}
+                >
+                  {pagination.nextPage}
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
-      {isPremium && <DownloadedExpenses/>}
+      {isPremium && <DownloadedExpenses />}
     </div>
   );
 };
