@@ -18,7 +18,7 @@ const ExpensesList = (props) => {
               <b>Catagory - </b> {expense.category}
             </div>
             <div>
-            <button className="btn btn-danger btn-sm" onClick={() => props.onDelete(expense.id)}>Delete</button>
+            <button className="btn btn-danger btn-sm" onClick={() => props.onDelete(expense.id, expense.amount)}>Delete</button>
             </div>
           </li>
         );

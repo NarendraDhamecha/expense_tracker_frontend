@@ -2,33 +2,36 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 
-const Leaderboard = () => {
+const Leaderboard = (props) => {
   const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/purchase/showleaderboard", {
+      .get("http://localhost:4000/premium/showleaderboard", {
         headers: { Authorization: localStorage.getItem("token") },
       })
       .then((data) => setLeaderboardData(data.data))
       .catch((err) => console.log(err));
   }, []);
 
-  console.log(leaderboardData);
-
   return (
-    <div className="container-fluid text-center">
-      <div className="row">
-        <div className="col-md-4 col-10 mx-auto">
+        <div className="col">
           <div className="card">
-            <h2 className="card-header">LEADERBOARD</h2>
+          <div className="card-header d-flex justify-content-between align-items-center">
+             <div>
+             <h4 >LEADERBOARD</h4>
+             </div>
+             <div>
+              <button className="btn btn-close" onClick={() => props.setshowleaderboard(false)}></button>
+             </div>
+          </div>
             <div className="card-body">
               <ul>
                 {leaderboardData.map((data) => {
                   return (
-                    <li key={data.userId} className="mb-2 d-flex justify-content-around">
-                      <div>Name - {data.name}</div>
-                      <div>Total Expenses - {data.totalAmount}</div>
+                    <li key={data.id} className="mb-2 row text-start">
+                      <div className="col">Name - {data.name}</div>
+                      <div className="col">Total Expenses - {data.totalExpenses || 0}</div>
                     </li>
                   );
                 })}
@@ -36,8 +39,6 @@ const Leaderboard = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
   );
 };
 

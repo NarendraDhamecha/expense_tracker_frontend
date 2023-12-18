@@ -3,10 +3,12 @@ import ExpensesList from "./ExpensesList";
 import PremiumFeature from "./PremiumFeature";
 import DownloadedExpenses from "./DownloadedExpenses";
 import axios from "axios";
+import Leaderboard from "./Leaderboard";
+import Dummy from "../extra/Dummy";
 
 const Expense = () => {
   const initialState = JSON.parse(localStorage.getItem("isPremium"));
-  const initialRowsPerPage = Number(localStorage.getItem('rows')); 
+  const initialRowsPerPage = Number(localStorage.getItem("rows"));
   const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage);
   const [isPremium, setPremium] = useState(initialState);
   const [expensesList, setExpensesList] = useState([]);
@@ -20,35 +22,38 @@ const Expense = () => {
   const amountRef = useRef("");
   const descriptionRef = useRef("");
   const catagoryRef = useRef("");
+  const [showleaderboard, setshowleaderboard] = useState(false)
 
-  const getExpenses = useCallback(async (page) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/expenses?page=${page}&rows=${rowsPerPage}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      );
+  const getExpenses = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/expenses?page=${page}&rows=${rowsPerPage}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
+        );
 
-      setExpensesList(response.data.response);
+        setExpensesList(response.data.response);
 
-      setPagination({
-        hasNextPage: response.data.hasNextPage,
-        hasPreviousPage: response.data.hasPreviousPage,
-        currentPage: response.data.currentPage,
-        nextPage: response.data.nextPage,
-        previousPage: response.data.previousPage,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  },[rowsPerPage]);
+        setPagination({
+          hasNextPage: response.data.hasNextPage,
+          hasPreviousPage: response.data.hasPreviousPage,
+          currentPage: response.data.currentPage,
+          nextPage: response.data.nextPage,
+          previousPage: response.data.previousPage,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [rowsPerPage]
+  );
 
   useEffect(() => {
     getExpenses(1);
-    console.log('useEffect')
   }, [getExpenses]);
 
   const submitHandler = async (e) => {
@@ -115,24 +120,16 @@ const Expense = () => {
   };
 
   const handleRowsPerPage = (e) => {
-    localStorage.setItem('rows', e.target.value);
+    localStorage.setItem("rows", e.target.value);
     setRowsPerPage(e.target.value);
-  }
+  };
 
   return (
-    <div className="container-fluid text-center">
-      <label className="me-1">Rows per page :</label>
-      <select onChange={handleRowsPerPage}>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-      </select>
-      <PremiumFeature setPremium={setPremium} isPremium={isPremium} />
+    <div className="container-fluid text-center my-3">
       <div className="row">
-        <div className="col-md-5 col-10 mx-auto">
+        <div className="col">
           <div className="card">
-            <h2 className="card-header">ADD EXPENSES HERE</h2>
+            <h4 className="card-header">ADD EXPENSES HERE</h4>
             <div className="card-body">
               <form onSubmit={submitHandler}>
                 <div className="mb-2">
@@ -171,11 +168,29 @@ const Expense = () => {
             </div>
           </div>
         </div>
+        {!showleaderboard && <PremiumFeature setshowleaderboard={setshowleaderboard} setPremium={setPremium} isPremium={isPremium} />}
+        {showleaderboard && <Leaderboard setshowleaderboard={setshowleaderboard}/>}
       </div>
-      <div className="row">
-        <div className="col-md-6 col-10 mx-auto">
-          <div className="card mt-2">
-            <h2 className="card-header">EXPENSES</h2>
+      <div className="row mt-2">
+        <div className="col">
+          <div className="card">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <div>
+                <h4>EXPENSES</h4>
+              </div>
+              <div>
+                <select
+                  className="form-select w-auto"
+                  defaultValue={rowsPerPage}
+                  onChange={handleRowsPerPage}
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+            </div>
             <div className="card-body">
               <ExpensesList onDelete={onDelete} expenses={expensesList} />
               {pagination.hasPreviousPage && (
@@ -205,8 +220,9 @@ const Expense = () => {
             </div>
           </div>
         </div>
+        {isPremium && <DownloadedExpenses />}
+        {!isPremium && <Dummy/>}
       </div>
-      {isPremium && <DownloadedExpenses />}
     </div>
   );
 };

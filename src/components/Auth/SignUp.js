@@ -22,10 +22,6 @@ const SignUp = () => {
       return;
     }
 
-    if (password.length < 6) {
-      alert("password is too short");
-      return;
-    }
 
     try {
       const res = await fetch("http://localhost:4000/user/signup", {
@@ -94,6 +90,8 @@ const SignUp = () => {
                     className="form-control"
                     type="password"
                     placeholder="Password"
+                    minLength='6'
+                    maxLength='10'
                     required
                   />
                 </div>
@@ -103,6 +101,8 @@ const SignUp = () => {
                     type="password"
                     ref={confirmPasswordRef}
                     placeholder="Confirm Password"
+                    minLength='6'
+                    maxLength='10'
                     required
                   />
                 </div>
@@ -114,9 +114,9 @@ const SignUp = () => {
           </div>
           <div className="card mt-3">
             <div className="card-body">
-               <p className="card-text">
-               Already have an account? <NavLink to="/login">Log In</NavLink>
-               </p>
+              <p className="card-text">
+                Already have an account? <NavLink to="/login">Log In</NavLink>
+              </p>
             </div>
           </div>
         </div>

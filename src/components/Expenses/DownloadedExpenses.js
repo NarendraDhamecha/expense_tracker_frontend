@@ -19,10 +19,10 @@ const DownloadedExpenses = () => {
   }, []);
 
   return (
-    <div className="row">
-      <div className="col-md-5 col-10 mx-auto">
+    
+      <div className="col">
         <div className="card">
-          <h3 className="card-header">Downloaded Expenses</h3>
+          <h4 className="card-header">Downloaded Expenses</h4>
           <div className="card-body">
             <ul>
               {downloadedExpenses.map((expense) => {
@@ -39,7 +39,7 @@ const DownloadedExpenses = () => {
           </div>
         </div>
       </div>
-    </div>
+   
   );
 };
 

@@ -1,6 +1,5 @@
 import axios from "axios";
 import "./PremiumFeature.css";
-import { NavLink } from "react-router-dom";
 
 const PremiumFeature = (props) => {
   const { isPremium, setPremium } = props;
@@ -98,25 +97,44 @@ const PremiumFeature = (props) => {
   };
 
   return (
-    <div className="premium">
-      {!isPremium && (
-        <button className="btn btn-primary" onClick={activatePremiumHandler}>
-          Activate Premium
-        </button>
-      )}
-      {isPremium && <h5>You are a premium user</h5>}
-      {isPremium && (
-        <button className="btn btn-primary btn-sm" onClick={downloadExpenses}>
-          Download expenses
-        </button>
-      )}
-      {isPremium && (
-        <NavLink to="/leaderboard">
-          <button className="btn btn-primary btn-sm ms-1">
-            Show Leaderboard
-          </button>
-        </NavLink>
-      )}
+    <div className="col">
+      <div className="card">
+        <div className="card-body">
+          <div>
+            <img
+              className="fitimg"
+              src="https://media.istockphoto.com/id/1261448272/vector/star-award-vector-icon-medal-best-flat-quality-reward-premium-symbol-isolated-illustation.jpg?s=612x612&w=0&k=20&c=elxe4PY8-JtbeXswZ1g5apLgWq1bwyFG317odEL6rL4="
+              alt="..."
+            />
+          </div>
+
+          {!isPremium && (
+            <button
+              className="btn btn-primary"
+              onClick={activatePremiumHandler}
+            >
+              Activate Premium
+            </button>
+          )}
+          {isPremium && <h5>You are a premium user</h5>}
+          {isPremium && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={downloadExpenses}
+            >
+              Download expenses
+            </button>
+          )}
+          {isPremium && (
+            <button
+              onClick={() => props.setshowleaderboard(true)}
+              className="btn btn-primary btn-sm ms-1"
+            >
+              Show Leaderboard
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
