@@ -7,7 +7,7 @@ const ExpensesList = (props) => {
     <ul>
       {props.expenses.map((expense) => {
         return (
-          <li className="expense mb-2" key={expense.id}>
+          <li className="expense mb-2" key={expense._id}>
             <div>
               <b>Amount - </b> {`$${expense.amount}`}
             </div>
@@ -18,7 +18,7 @@ const ExpensesList = (props) => {
               <b>Catagory - </b> {expense.category}
             </div>
             <div>
-            <button className="btn btn-danger btn-sm" onClick={() => props.onDelete(expense.id, expense.amount)}>Delete</button>
+            <button className="btn btn-danger btn-sm" onClick={() => props.onDelete(expense._id, expense.amount)}>Delete</button>
             </div>
           </li>
         );

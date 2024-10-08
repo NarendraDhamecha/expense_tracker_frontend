@@ -112,7 +112,7 @@ const Expense = () => {
 
     if (response.ok) {
       const filteredList = expensesList.filter((expense) => {
-        return expense.id !== id;
+        return expense._id !== id;
       });
 
       setExpensesList(filteredList);
